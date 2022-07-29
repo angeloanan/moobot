@@ -7,8 +7,8 @@ export class RankUpdateTask extends ScheduledTask {
     super(context, {
       ...options,
       // Every 30 minutes
-      name: 'rankUpdate'
-      // interval: 60 * 1000
+      name: 'rankUpdate',
+      interval: 30 * 60 * 1000
     })
   }
 
@@ -25,10 +25,11 @@ export class RankUpdateTask extends ScheduledTask {
 
       const allMembers = await guild.members.fetch()
 
-      const allCount = allMembers.size
+      const filteredMembers = allMembers.filter((u) => !u.user.bot)
+      const allCount = filteredMembers.size
       let count = 0
 
-      for await (const [, user] of allMembers.filter((u) => !u.user.bot)) {
+      for await (const [, user] of filteredMembers) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.container.logger.info(`Processing user ${user.user.tag} (${count++} / ${allCount})`)
         const userJoinTime = user.joinedAt
