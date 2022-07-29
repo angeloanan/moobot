@@ -29,5 +29,7 @@ export class ReadyListener extends Listener {
         }
       ]
     })
+
+    this.container.tasks.run('rankUpdate', '')
   }
 }

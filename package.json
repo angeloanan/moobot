@@ -8,6 +8,10 @@
     "@prisma/client": "^4.0.0",
     "@sapphire/discord-utilities": "^2.11.2",
     "@sapphire/framework": "^3.0.0-next.a699d98.0",
+    "@sapphire/plugin-scheduled-tasks": "^3.0.0",
+    "@sapphire/stopwatch": "^1.4.1",
+    "@sapphire/time-utilities": "^1.7.5",
+    "bullmq": "^1.86.7",
     "common-tags": "^1.8.2",
     "discord.js": "^13",
     "dotenv": "^16.0.1"
@@ -15,6 +19,7 @@
   "devDependencies": {
     "@sapphire/ts-config": "^3.3.4",
     "@types/common-tags": "^1.8.1",
+    "@types/ioredis": "^4.28.10",
     "@types/node": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^5.30.6",
     "@typescript-eslint/parser": "^5.30.6",
