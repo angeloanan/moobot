@@ -5,9 +5,10 @@
   "author": "Christopher Angelo <angelo@angeloanan.xyz>",
   "license": "MIT",
   "dependencies": {
+    "@google-cloud/translate": "^7.0.0",
     "@prisma/client": "^4.0.0",
     "@sapphire/discord-utilities": "^2.11.2",
-    "@sapphire/framework": "^3.0.0-next.a699d98.0",
+    "@sapphire/framework": "^3.0.0-next.f47e6f6.0",
     "@sapphire/plugin-scheduled-tasks": "^3.0.0",
     "@sapphire/stopwatch": "^1.4.1",
     "@sapphire/time-utilities": "^1.7.5",
