@@ -12,6 +12,12 @@ datasource db {
   url                  = env("DATABASE_URL")
 }
 
-model Todo {
-  id Int @id @default(autoincrement())
+model UserExp {
+  userId String @id
+
+  exp      Int @default(0)
+  prestige Int @default(0)
+
+  // Don't let user gain exp until this time
+  timeoutUntil DateTime @default(now())
 }
