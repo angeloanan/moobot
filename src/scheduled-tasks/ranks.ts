@@ -76,6 +76,6 @@ export class RankUpdateTask extends ScheduledTask {
 
 declare module '@sapphire/plugin-scheduled-tasks' {
   interface ScheduledTasks {
-    cron: never
+    rankUpdate: never
   }
 }

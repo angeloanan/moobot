@@ -12,11 +12,41 @@ datasource db {
   url                  = env("DATABASE_URL")
 }
 
+model Giveaway {
+  id Int @id @default(autoincrement())
+
+  title       String
+  description String?
+  hoster      String
+  winnerCount Int     @default(1)
+
+  createdAt DateTime @default(now())
+  until     DateTime
+
+  // Discord channel where the giveaway is posted
+  channelId String
+
+  // Workaround because MySQL does not support string scalar type for userIds
+  GiveawayEntry GiveawayEntry[]
+}
+
+model GiveawayEntry {
+  id     Int    @id @default(autoincrement())
+  userId String
+
+  giveaway   Giveaway @relation(fields: [giveawayId], references: [id])
+  giveawayId Int
+
+  @@unique([userId, giveawayId])
+}
+
+// ---
+
 model UserExp {
   userId String @id
 
-  exp      Int @default(0)
-  prestige Int @default(0)
+  exp      Float @default(0)
+  prestige Int   @default(0)
 
   // Don't let user gain exp until this time
   timeoutUntil DateTime @default(now())

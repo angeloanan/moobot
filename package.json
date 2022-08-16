@@ -10,12 +10,15 @@
     "@sapphire/discord-utilities": "next",
     "@sapphire/framework": "next",
     "@sapphire/plugin-scheduled-tasks": "next",
+    "@sapphire/plugin-subcommands": "next",
     "@sapphire/stopwatch": "^1.4.1",
     "@sapphire/time-utilities": "^1.7.5",
+    "@sapphire/utilities": "next",
     "bullmq": "^1.87",
     "common-tags": "^1.8.2",
     "discord.js": "^13",
-    "dotenv": "^16.0.1"
+    "dotenv": "^16.0.1",
+    "parse-duration": "^1.0.2"
   },
   "devDependencies": {
     "@sapphire/ts-config": "^3.3.4",
