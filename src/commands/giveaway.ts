@@ -146,6 +146,7 @@ export class GiveawayCommand extends Subcommand {
               type: 'BUTTON',
               style: 'PRIMARY',
               emoji: '🎉',
+              label: 'Join',
               custom_id: `enter_giveaway:${giveawayDbEntry.id}`
             }
           ]
