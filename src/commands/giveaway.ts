@@ -84,7 +84,7 @@ export class GiveawayCommand extends Subcommand {
           ),
       {
         behaviorWhenNotIdentical: RegisterBehavior.Overwrite,
-        idHints: ['']
+        idHints: ['1009183635594825820']
       }
     )
   }
@@ -115,8 +115,6 @@ export class GiveawayCommand extends Subcommand {
         channelId: channel.id
       }
     })
-
-    this.container.logger.debug(interaction.options.getAttachment('image', false))
 
     await channel.send({
       embeds: [

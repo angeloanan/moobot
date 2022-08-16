@@ -13,9 +13,8 @@ export class GiveawayEndTask extends ScheduledTask {
   public async run(id: number) {
     try {
       const [giveawayData, userGiveawayEntries] = await Promise.all([
-        await this.container.database.giveaway.findUnique({
-          where: { id },
-          rejectOnNotFound: true
+        await this.container.database.giveaway.findUniqueOrThrow({
+          where: { id }
         }),
         await this.container.database.giveawayEntry.findMany({
           where: {
@@ -53,10 +52,14 @@ export class GiveawayEndTask extends ScheduledTask {
         giveawayData.channelId
       )) as TextChannel
 
+      if (choiceArrays.length === 0) {
+        await channel.send(`Nobody entered the giveaway for ${giveawayData.title}. So, nobody won!`)
+      }
+
       // Randomly select a winner
       for (let i = 0; i < giveawayData.winnerCount; i++) {
         const winner = choiceArrays[Math.floor(Math.random() * choiceArrays.length)]
-        channel.send(
+        await channel.send(
           `**🎉 CONGRATULATIONS <@${winner}>** won the giveaway for ${giveawayData.title}!`
         )
       }
