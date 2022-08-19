@@ -26,7 +26,6 @@ export class GiveawayEndTask extends ScheduledTask {
         })
       ])
 
-      // 1 chance = 1 entry in choiceArrays
       /**
        * Array of user ids
        */
@@ -42,7 +41,9 @@ export class GiveawayEndTask extends ScheduledTask {
 
           const userLevel = userLevelData?.exp != null ? experienceToLevel(userLevelData.exp) : 0
 
-          for (let i = 0; i <= userLevel; i++) {
+          // Add 1 extra chance per 10 level
+          // Level 0 = only 1 chance
+          for (let i = 0; i <= userLevel; i += 10) {
             choiceArrays.push(userId)
           }
         })
