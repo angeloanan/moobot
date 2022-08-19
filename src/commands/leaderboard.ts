@@ -1,7 +1,6 @@
 import { Command, RegisterBehavior } from '@sapphire/framework'
-import { stripIndents } from 'common-tags'
 import { MessageEmbed } from 'discord.js'
-import { experienceToLevel } from '../constants/expLevel.js'
+import { experienceToLevel } from '../constants/expLevel'
 
 const NumberFormatter = new Intl.NumberFormat('en-US', { notation: 'compact' })
 
@@ -25,12 +24,17 @@ export class LeaderboardCommand extends Command {
     await interaction.deferReply()
 
     const leaderboardUsers = await this.container.database.userExp.findMany({
+      select: {
+        userId: true,
+        exp: true
+      },
       orderBy: {
         exp: 'desc'
       },
       take: 10
     })
 
+    // TODO: Shared functions - Put this somewhere else
     const leaderboardStrings = leaderboardUsers.map((user, i) => {
       return `**${i + 1}.** <@${user.userId}> - Level ${experienceToLevel(
         user.exp
@@ -38,18 +42,36 @@ export class LeaderboardCommand extends Command {
     })
 
     interaction.editReply({
-      content: `Showing the leaderboard of users with the top EXP in the server`,
+      content: `The following is the leaderboard for server EXP:`,
       embeds: [
         new MessageEmbed()
           .setColor('#d946ef')
-          .setTitle('LEADERBOARD - Top 10 users with highest EXP')
-          .setDescription(
-            stripIndents`
-              ${leaderboardStrings.join('\n')}
-            `
-          )
+          .setAuthor({ name: '🏆 EXP Leaderboard' })
+          .setTitle('Showing users with highest EXP')
+          .setDescription(leaderboardStrings.join('\n'))
           .setTimestamp(interaction.createdTimestamp)
-          .setFooter({ text: 'Updated at', iconURL: interaction.user.displayAvatarURL() })
+          .setFooter({ text: 'Page 1 | Updated at', iconURL: interaction.user.displayAvatarURL() })
+      ],
+      components: [
+        {
+          type: 'ACTION_ROW',
+          components: [
+            {
+              customId: 'leaderboard_scroll:prev',
+              type: 'BUTTON',
+              style: 'SECONDARY',
+              emoji: '⬅️',
+              label: 'Previous page'
+            },
+            {
+              customId: 'leaderboard_scroll:next',
+              type: 'BUTTON',
+              style: 'SECONDARY',
+              emoji: '➡',
+              label: 'Next page'
+            }
+          ]
+        }
       ]
     })
   }

@@ -28,6 +28,11 @@ export class RankCommand extends Command {
   }
 
   public override async chatInputRun(interaction: Command.ChatInputInteraction) {
+    if (!interaction.inGuild()) {
+      interaction.reply('This command can only be used in a server.')
+      return
+    }
+
     await interaction.deferReply()
 
     const queryUser = interaction.options.getUser('user', false)?.id ?? interaction.user.id
@@ -67,7 +72,7 @@ export class RankCommand extends Command {
             ------------------------------
             **\`🏅     LEVEL:\`** ${currentUserLevel}
             **\`🥗       EXP:\`** ${userRankData.exp} EXP (${expToLevelUp} to level up)
-            **\`🚀 EXP BOOST:\`** ${userIsBoosting ? '1.2x' : '1.0x'}
+            **\`🚀 EXP BOOST:\`** ${userIsBoosting ? '1.2x (Server boost)' : '1.0x'}
             **\`🗓️ JOIN DATE:\`** <t:${Math.round(memberData.joinedAt!.getTime() / 1000)}:f>
           `)
       ]

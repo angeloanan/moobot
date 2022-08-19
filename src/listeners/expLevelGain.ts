@@ -53,16 +53,17 @@ export class ExpLevelGainListener extends Listener {
 
     this.container.logger.debug(`> EXP - ${message.author.tag} gained ${expGained}EXP`)
 
+    // TODO: Separate logic to custom events
     // If user gains a level
     if (experienceToLevel(userExpData.exp) != experienceToLevel(userExpData.exp + expGained)) {
       const logChannel = await this.container.client.channels.fetch(LEVEL_LOG_CHANNEL)
       assert(logChannel?.isText())
 
-      logChannel.send(
-        `⬆ <@${message.author.id}> (\`${message.author.id}\`) is now **Level ${experienceToLevel(
-          userExpData.exp + expGained
-        )}**!`
-      )
+      logChannel.send({
+        content: `⬆ <@${message.author.id}> (\`${message.author.id
+          }\`) is now **Level ${experienceToLevel(userExpData.exp + expGained)}**!`,
+        allowedMentions: {}
+      })
     }
 
     await this.container.database.userExp.upsert({
