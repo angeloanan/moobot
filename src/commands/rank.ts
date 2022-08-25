@@ -3,6 +3,8 @@ import { stripIndents } from 'common-tags'
 import { MessageEmbed } from 'discord.js'
 import { experienceToLevel, levelExpTotal } from '../constants/expLevel.js'
 
+const numberFormatter = Intl.NumberFormat('en-US')
+
 export class RankCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
     super(context, options)
@@ -71,7 +73,9 @@ export class RankCommand extends Command {
             **\`🏆  PRESTIGE:\`** ${prestigeText}
             ------------------------------
             **\`🏅     LEVEL:\`** ${currentUserLevel}
-            **\`🥗       EXP:\`** ${userRankData.exp} EXP (${expToLevelUp} to level up)
+            **\`🥗       EXP:\`** ${numberFormatter.format(
+            userRankData.exp
+          )} EXP (${numberFormatter.format(expToLevelUp)} to level up)
             **\`🚀 EXP BOOST:\`** ${userIsBoosting ? '1.2x (Server boost)' : '1.0x'}
             **\`🗓️ JOIN DATE:\`** <t:${Math.round(memberData.joinedAt!.getTime() / 1000)}:f>
           `)
