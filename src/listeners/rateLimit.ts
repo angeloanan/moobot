@@ -1,7 +1,7 @@
 import { Listener } from '@sapphire/framework'
 import type { RateLimitData } from 'discord.js'
 
-export class ReadyListener extends Listener {
+export class RateLimitListener extends Listener {
   public constructor(context: Listener.Context, options: Listener.Options) {
     super(context, {
       ...options,
@@ -11,8 +11,7 @@ export class ReadyListener extends Listener {
 
   async run(data: RateLimitData): Promise<void> {
     this.container.logger.warn(
-      `Rate limit exceeded: ${data.method.toUpperCase()} ${data.path} (${data.timeout}ms -> ${
-        data.limit
+      `Rate limit exceeded: ${data.method.toUpperCase()} ${data.path} (${data.timeout}ms -> ${data.limit
       } request)`
     )
   }

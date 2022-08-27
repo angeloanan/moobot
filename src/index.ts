@@ -5,6 +5,8 @@ import { ScheduledTaskRedisStrategy } from '@sapphire/plugin-scheduled-tasks/reg
 import type { ScheduledTaskRedisStrategyJob } from '@sapphire/plugin-scheduled-tasks/register-redis'
 import type { Queue } from 'bullmq'
 import { PrismaClient } from '@prisma/client'
+import type { QueryApi, WriteApi } from '@influxdata/influxdb-client'
+import { InfluxQueryAPI, InfluxWriteAPI } from './lib/influx'
 
 export class BotClient extends SapphireClient {
   public constructor() {
@@ -42,18 +44,38 @@ export class BotClient extends SapphireClient {
     container.database = new PrismaClient()
     await container.database.$connect()
     container.logger.info(`Connected to database.`)
+
+    container.logger.info('Connecting to analytics service (InfluxDB)...')
+    container.analytics = {
+      write: InfluxWriteAPI,
+      query: InfluxQueryAPI
+    }
+    container.logger.info(`Connected to analytics service.`)
+
     container.logger.info(`Bot logging in...`)
     return super.login(token)
   }
 
   public override async destroy() {
-    container.logger.info(`Disconnecting from database...`)
-    await container.database.$disconnect()
-    container.logger.info(`Disconnected from database.`)
-
-    const queueClient = this.options.tasks?.strategy
-      .client as Queue<ScheduledTaskRedisStrategyJob | null>
-    await queueClient?.close()
+    await Promise.all([
+      async () => {
+        container.logger.info(`Disconnecting from database...`)
+        await container.database.$disconnect()
+        container.logger.info(`Disconnected from database.`)
+      },
+      async () => {
+        container.logger.info(`Stopping Redis tasks...`)
+        const queueClient = this.options.tasks?.strategy
+          .client as Queue<ScheduledTaskRedisStrategyJob | null>
+        await queueClient?.close()
+        container.logger.info(`Redis tasks stopped`)
+      },
+      async () => {
+        container.logger.info(`Disconnecting from analytics service...`)
+        await container.analytics.write.close()
+        container.logger.info(`Disconnected from analytics service.`)
+      }
+    ])
 
     return super.destroy()
   }
@@ -63,6 +85,10 @@ export class BotClient extends SapphireClient {
 declare module '@sapphire/pieces' {
   interface Container {
     database: PrismaClient
+    analytics: {
+      write: WriteApi
+      query: QueryApi
+    }
   }
 }
 

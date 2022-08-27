@@ -74,8 +74,8 @@ export class RankCommand extends Command {
             ------------------------------
             **\`🏅     LEVEL:\`** ${currentUserLevel}
             **\`🥗       EXP:\`** ${numberFormatter.format(
-            userRankData.exp
-          )} EXP (${numberFormatter.format(expToLevelUp)} to level up)
+              userRankData.exp
+            )} EXP (${numberFormatter.format(expToLevelUp)} to level up)
             **\`🚀 EXP BOOST:\`** ${userIsBoosting ? '1.2x (Server boost)' : '1.0x'}
             **\`🗓️ JOIN DATE:\`** <t:${Math.round(memberData.joinedAt!.getTime() / 1000)}:f>
           `)

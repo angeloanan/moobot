@@ -1,6 +1,7 @@
 import { Command, RegisterBehavior } from '@sapphire/framework'
 import { MessageEmbed } from 'discord.js'
 import { experienceToLevel } from '../constants/expLevel'
+import { setTimeout } from 'timers/promises'
 
 const NumberFormatter = new Intl.NumberFormat('en-US', { notation: 'compact' })
 
@@ -41,7 +42,7 @@ export class LeaderboardCommand extends Command {
       )} (${NumberFormatter.format(user.exp)} EXP)`
     })
 
-    interaction.editReply({
+    await interaction.editReply({
       content: `The following is the leaderboard for server EXP:`,
       embeds: [
         new MessageEmbed()
@@ -73,6 +74,15 @@ export class LeaderboardCommand extends Command {
           ]
         }
       ]
+    })
+
+    this.queueClearMessageButtons(interaction)
+  }
+
+  async queueClearMessageButtons(interaction: Command.ChatInputInteraction) {
+    await setTimeout(1000 * 60 * 3)
+    interaction.editReply({
+      components: []
     })
   }
 }

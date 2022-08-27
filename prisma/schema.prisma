@@ -51,3 +51,11 @@ model UserExp {
   // Don't let user gain exp until this time
   timeoutUntil DateTime @default(now())
 }
+
+// --- 
+
+model UserInvites {
+  userId String @id
+
+  inviteCount Int @default(0)
+}

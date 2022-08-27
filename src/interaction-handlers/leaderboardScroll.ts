@@ -36,8 +36,9 @@ export class LeaderboardScrollButtonHandler extends InteractionHandler {
     })
 
     const leaderboardStrings = leaderboardUsers.map((user, i) => {
-      return `**${(newPage - 1) * LEADERBOARD_ENTRY_PER_PAGE + i + 1}.** <@${user.userId
-        }> - Level ${experienceToLevel(user.exp)} (${NumberFormatter.format(user.exp)} EXP)`
+      return `**${(newPage - 1) * LEADERBOARD_ENTRY_PER_PAGE + i + 1}.** <@${
+        user.userId
+      }> - Level ${experienceToLevel(user.exp)} (${NumberFormatter.format(user.exp)} EXP)`
     })
 
     await interaction.update({
