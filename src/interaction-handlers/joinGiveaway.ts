@@ -47,17 +47,17 @@ export class EnterGiveawayButtonHandler extends InteractionHandler {
       }
     })
 
+    await interaction.reply({
+      ephemeral: true,
+      content: `✅ You are now entered to the giveaway`
+    })
+
     await giveawayMessage.edit({
       embeds: [
         new MessageEmbed(giveawayMessage.embeds[0]).setFooter({
           text: `🎉 ${entriesCount._count.giveawayId} people have joined the giveaway!`
         })
       ]
-    })
-
-    await interaction.reply({
-      ephemeral: true,
-      content: `✅ You are now entered to the giveaway`
     })
   }
 
