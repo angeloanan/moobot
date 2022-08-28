@@ -5,6 +5,7 @@ import { EXP_GAIN_EVENTS, MEASUREMENT_NAMES } from '../../constants/analytics'
 import { generateExp } from '../../constants/expLevel'
 
 const TRACKED_GUILD_ID = '998384312065994782'
+const EXCLUDED_CHANNEL_IDS = ['1012983228354801684']
 
 export class VoiceChatExpGain extends ScheduledTask {
   public constructor(context: ScheduledTask.Context, options: ScheduledTask.Options) {
@@ -29,25 +30,48 @@ export class VoiceChatExpGain extends ScheduledTask {
 
       const usersToAddEXP = new Set<GuildMember>()
       const voiceChannels = guild.channels.cache.filter((c) => c.isVoice())
-      voiceChannels.each((vc) =>
-        (vc.members as Collection<string, GuildMember>).each((member) => usersToAddEXP.add(member))
-      )
+      voiceChannels
+        .filter((vc) => !EXCLUDED_CHANNEL_IDS.includes(vc.id)) // Filter out excluded channels
+        .filter(
+          (vc) =>
+            (vc.members as Collection<string, GuildMember>).filter((m) => !m.user.bot).size >= 2
+        ) // Allows for at least 2 non-bot users in the channel
+        .each((vc) =>
+          (vc.members as Collection<string, GuildMember>).each((member) =>
+            usersToAddEXP.add(member)
+          )
+        )
 
       for (const member of usersToAddEXP) {
         const expGained = generateExp()
+
+        const userExpData = await this.container.database.userExp.findUnique({
+          where: {
+            userId: member.id
+          },
+          select: {
+            voiceExpLeft: true
+          }
+        })
+
+        if (userExpData != null && userExpData.voiceExpLeft - expGained > 0) continue
 
         await this.container.database.userExp.upsert({
           where: {
             userId: member.id
           },
           update: {
+            voiceExpLeft: {
+              decrement: expGained
+            },
             exp: {
               increment: expGained
             }
           },
           create: {
             userId: member.id,
-            exp: expGained
+            exp: expGained,
+            voiceExpLeft: 1000 - expGained
           }
         })
         // TODO: Cap voice chat exp gains at 1000 exp per day

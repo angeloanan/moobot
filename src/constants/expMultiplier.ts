@@ -22,7 +22,10 @@ export const ROLE_EXP_FACTOR: [string, number][] = [
   // 3 Months - Flareon
   ['893138926234136627', 0.01],
   // 2 Months - Eevee
-  ['893080566054932502', 0.02]
+  ['893080566054932502', 0.02],
+
+  // --- Server boost
+  ['1013075673188945960', 0.05]
 
   // --- YouTube Members below
   //

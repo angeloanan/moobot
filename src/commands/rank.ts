@@ -1,9 +1,13 @@
 import { Command, RegisterBehavior } from '@sapphire/framework'
 import { stripIndents } from 'common-tags'
-import { MessageEmbed } from 'discord.js'
+import { GuildMember, MessageEmbed } from 'discord.js'
 import { experienceToLevel, levelExpTotal } from '../constants/expLevel.js'
+import { resolveExpMultiplier } from '../constants/expMultiplier.js'
 
-const numberFormatter = Intl.NumberFormat('en-US')
+const numberFormatter = Intl.NumberFormat('en-US', {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0
+})
 
 export class RankCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -53,11 +57,15 @@ export class RankCommand extends Command {
       })
     }
 
-    const userIsBoosting = memberData?.roles.premiumSubscriberRole != null
+    const userExpMultiplier = resolveExpMultiplier(memberData)
     const currentUserLevel = Math.floor(experienceToLevel(userRankData.exp))
     const expToLevelUp = levelExpTotal(currentUserLevel + 1) - userRankData.exp
     const prestigeText =
       userRankData.prestige === 0 ? 'No prestige' : `Prestige ${userRankData.prestige}`
+
+    const formattedExp = numberFormatter.format(userRankData.exp)
+    const formattedExpToLevelUp = numberFormatter.format(expToLevelUp)
+    const formattedVcExpLeft = numberFormatter.format(userRankData.voiceExpLeft)
 
     interaction.editReply({
       content: `Showing information for <@${userRankData.userId}>'s rank`,
@@ -70,14 +78,13 @@ export class RankCommand extends Command {
           })
           .setThumbnail(userDiscordData.displayAvatarURL()) //
           .setDescription(stripIndents`
-            **\`🏆  PRESTIGE:\`** ${prestigeText}
+            **\`🏆    PRESTIGE:\`** ${prestigeText}
             ------------------------------
-            **\`🏅     LEVEL:\`** ${currentUserLevel}
-            **\`🥗       EXP:\`** ${numberFormatter.format(
-              userRankData.exp
-            )} EXP (${numberFormatter.format(expToLevelUp)} to level up)
-            **\`🚀 EXP BOOST:\`** ${userIsBoosting ? '1.2x (Server boost)' : '1.0x'}
-            **\`🗓️ JOIN DATE:\`** <t:${Math.round(memberData.joinedAt!.getTime() / 1000)}:f>
+            **\`🏅       LEVEL:\`** ${currentUserLevel}
+            **\`🥗         EXP:\`** ${formattedExp} EXP (${formattedExpToLevelUp} to level up)
+            **\`🎙️ VC EXP LEFT:\`** ${formattedVcExpLeft} EXP
+            **\`🚀   EXP BOOST:\`** ${userExpMultiplier}x
+            **\`🗓️   JOIN DATE:\`** <t:${Math.round(memberData.joinedAt!.getTime() / 1000)}:f>
           `)
       ]
     })

@@ -2,9 +2,10 @@ import { Point } from '@influxdata/influxdb-client'
 import { Listener } from '@sapphire/framework'
 import { Time } from '@sapphire/time-utilities'
 import assert from 'assert'
-import type { Message, Snowflake } from 'discord.js'
+import type { Message, Snowflake, TextChannel } from 'discord.js'
 import { EXP_GAIN_EVENTS, MEASUREMENT_NAMES } from '../constants/analytics'
 import { experienceToLevel, generateExp } from '../constants/expLevel'
+import { resolveExpMultiplier } from '../constants/expMultiplier'
 
 const TRACKED_SERVER_ID: Snowflake[] = ['998384312065994782']
 const LEVEL_LOG_CHANNEL: Snowflake = '1007273746903617706'
@@ -47,12 +48,8 @@ export class ExpLevelGainListener extends Listener {
     if (userExpData.timeoutUntil.getTime() > Date.now()) return
 
     let expGained = generateExp()
-
-    // TODO: Resolve multiplier later
-    // Boosting users will get 1.2x exp
-    if (message.member?.roles.premiumSubscriberRole != null) {
-      expGained *= 1.2
-    }
+    const expMultiplier = resolveExpMultiplier(message.member!)
+    expGained *= expMultiplier
 
     this.container.analytics.write.writePoint(
       new Point(MEASUREMENT_NAMES.EXP_GAIN)
@@ -65,13 +62,17 @@ export class ExpLevelGainListener extends Listener {
     // TODO: Separate logic to custom events
     // If user gains a level
     if (experienceToLevel(userExpData.exp) != experienceToLevel(userExpData.exp + expGained)) {
-      const logChannel = await this.container.client.channels.fetch(LEVEL_LOG_CHANNEL)
-      assert(logChannel?.isText())
+      const logChannel = (await this.container.client.channels.fetch(
+        LEVEL_LOG_CHANNEL
+      )) as TextChannel
+      const authorId = message.author.id
+      const currentLevel = experienceToLevel(userExpData.exp + expGained)
 
       logChannel.send({
-        content: `⬆ <@${message.author.id}> (\`${message.author.id
-          }\`) is now **Level ${experienceToLevel(userExpData.exp + expGained)}**!`,
-        allowedMentions: {}
+        content: `⬆ <@${authorId}> (\`${authorId}\`) is now **Level ${currentLevel}**!`,
+        allowedMentions: {
+          parse: []
+        }
       })
     }
 

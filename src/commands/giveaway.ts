@@ -105,19 +105,7 @@ export class GiveawayCommand extends Subcommand {
 
     const endTime = new Date(interaction.createdTimestamp + duration)
 
-    const giveawayDbEntry = await this.container.database.giveaway.create({
-      data: {
-        title: title,
-        description: description,
-        hoster: interaction.user.id,
-        winnerCount,
-        createdAt: interaction.createdAt,
-        until: endTime,
-        channelId: channel.id
-      }
-    })
-
-    await channel.send({
+    const giveawayMessage = await channel.send({
       embeds: [
         {
           title: title,
@@ -136,7 +124,23 @@ export class GiveawayCommand extends Subcommand {
           },
           color: '#5865f2'
         }
-      ],
+      ]
+    })
+
+    const giveawayDbEntry = await this.container.database.giveaway.create({
+      data: {
+        title: title,
+        description: description,
+        hoster: interaction.user.id,
+        winnerCount,
+        createdAt: interaction.createdAt,
+        until: endTime,
+        channelId: channel.id,
+        messageId: giveawayMessage.id
+      }
+    })
+
+    await giveawayMessage.edit({
       components: [
         {
           type: 'ACTION_ROW',

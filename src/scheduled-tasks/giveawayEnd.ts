@@ -1,5 +1,5 @@
 import { ScheduledTask } from '@sapphire/plugin-scheduled-tasks'
-import type { TextChannel } from 'discord.js'
+import { Message, MessageActionRow, MessageEmbed, TextChannel } from 'discord.js'
 import { experienceToLevel } from '../constants/expLevel'
 
 export class GiveawayEndTask extends ScheduledTask {
@@ -53,6 +53,16 @@ export class GiveawayEndTask extends ScheduledTask {
         giveawayData.channelId
       )) as TextChannel
 
+      const originalGiveawayMessage = await channel.messages.fetch(giveawayData.messageId)
+      await originalGiveawayMessage.edit({
+        components: [],
+        embeds: [
+          new MessageEmbed(originalGiveawayMessage.embeds[0]).setFooter(
+            'ENDED | ' + originalGiveawayMessage.embeds[0].footer
+          )
+        ]
+      })
+
       if (choiceArrays.length === 0) {
         await channel.send(`Nobody entered the giveaway for ${giveawayData.title}. So, nobody won!`)
       }
@@ -60,9 +70,13 @@ export class GiveawayEndTask extends ScheduledTask {
       // Randomly select a winner
       for (let i = 0; i < giveawayData.winnerCount; i++) {
         const winner = choiceArrays[Math.floor(Math.random() * choiceArrays.length)]
-        await channel.send(
-          `**🎉 CONGRATULATIONS <@${winner}>** won the giveaway for ${giveawayData.title}!`
-        )
+        await channel.send({
+          content: `**🎉 CONGRATULATIONS <@${winner}>** won the giveaway for ${giveawayData.title}!`,
+          reply: {
+            messageReference: originalGiveawayMessage,
+            failIfNotExists: false
+          }
+        })
       }
     } catch (e) {
       this.container.logger.error(e)

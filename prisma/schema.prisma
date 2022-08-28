@@ -25,6 +25,7 @@ model Giveaway {
 
   // Discord channel where the giveaway is posted
   channelId String
+  messageId String
 
   // Workaround because MySQL does not support string scalar type for userIds
   GiveawayEntry GiveawayEntry[]
@@ -50,6 +51,8 @@ model UserExp {
 
   // Don't let user gain exp until this time
   timeoutUntil DateTime @default(now())
+  // Available voice channel EXP
+  voiceExpLeft Float    @default(1000)
 }
 
 // --- 

@@ -11,7 +11,8 @@ export class RateLimitListener extends Listener {
 
   async run(data: RateLimitData): Promise<void> {
     this.container.logger.warn(
-      `Rate limit exceeded: ${data.method.toUpperCase()} ${data.path} (${data.timeout}ms -> ${data.limit
+      `Rate limit exceeded: ${data.method.toUpperCase()} ${data.path} (${data.timeout}ms -> ${
+        data.limit
       } request)`
     )
   }
