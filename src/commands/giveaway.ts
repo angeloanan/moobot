@@ -122,7 +122,7 @@ export class GiveawayCommand extends Subcommand {
             url: attachment?.url,
             proxy_url: attachment?.proxyURL
           },
-          color: '#5865f2'
+          color: '#e70bc9'
         }
       ]
     })
@@ -185,7 +185,7 @@ export class GiveawayCommand extends Subcommand {
       return
     }
 
-    // REFACTOR: Duplicate code
+    // TODO: Refactor duplicated code
     const choiceArrays: string[] = []
     await Promise.all(
       giveawayParticipants.map(async (user) => {
@@ -207,12 +207,16 @@ export class GiveawayCommand extends Subcommand {
     const winner = choiceArrays[Math.floor(Math.random() * choiceArrays.length)]
     const winnerUser = await this.container.client.users.fetch(winner)
 
-    await interaction.channel?.send(
-      stripIndent`
+    await interaction.channel?.send({
+      content: stripIndent`
         > 🎉 **Congratulations <@${winnerUser.id}>**
         You won the re-roll for ${giveawayData.title}!
-      `
-    )
+      `,
+      reply: {
+        messageReference: giveawayData.messageId,
+        failIfNotExists: false
+      }
+    })
 
     await interaction.editReply({ content: 'Giveaway rerolled!' })
   }

@@ -1,4 +1,5 @@
 import { ScheduledTask } from '@sapphire/plugin-scheduled-tasks'
+import { stripIndent } from 'common-tags'
 import { MessageEmbed, TextChannel } from 'discord.js'
 import { experienceToLevel } from '../constants/expLevel'
 
@@ -57,9 +58,21 @@ export class GiveawayEndTask extends ScheduledTask {
       await originalGiveawayMessage.edit({
         components: [],
         embeds: [
-          new MessageEmbed(originalGiveawayMessage.embeds[0]).setFooter(
-            'ENDED | ' + originalGiveawayMessage.embeds[0].footer
-          )
+          new MessageEmbed(originalGiveawayMessage.embeds[0])
+            .setColor('#2F3136')
+            .setDescription(
+              // TODO: Duplicated code - make this a function!
+              stripIndent`
+                ${giveawayData.description != null ? giveawayData.description : ''}
+                ---
+                **${giveawayData.winnerCount} winner will be chosen**
+                Ended <t:${Math.floor(giveawayData.until.getTime() / 1000)}:R>
+                *Started by <@${giveawayData.hoster}>*
+              `
+            )
+            .setFooter({
+              text: 'ENDED | ' + originalGiveawayMessage.embeds[0].footer?.text
+            })
         ]
       })
 
