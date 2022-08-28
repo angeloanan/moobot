@@ -1,6 +1,6 @@
 import { Point } from '@influxdata/influxdb-client'
 import { ScheduledTask } from '@sapphire/plugin-scheduled-tasks'
-import type { Collection, GuildMember } from 'discord.js'
+import type { GuildMember, VoiceChannel } from 'discord.js'
 import { EXP_GAIN_EVENTS, MEASUREMENT_NAMES } from '../../constants/analytics'
 import { generateExp } from '../../constants/expLevel'
 
@@ -29,18 +29,21 @@ export class VoiceChatExpGain extends ScheduledTask {
       }
 
       const usersToAddEXP = new Set<GuildMember>()
-      const voiceChannels = guild.channels.cache.filter((c) => c.isVoice())
-      voiceChannels
+      const voiceChannels = guild.channels.cache
+        .filter((c) => c.isVoice())
         .filter((vc) => !EXCLUDED_CHANNEL_IDS.includes(vc.id)) // Filter out excluded channels
-        .filter(
-          (vc) =>
-            (vc.members as Collection<string, GuildMember>).filter((m) => !m.user.bot).size >= 2
-        ) // Allows for at least 2 non-bot users in the channel
-        .each((vc) =>
-          (vc.members as Collection<string, GuildMember>).each((member) =>
+
+      await Promise.all(
+        voiceChannels.map(async (vc) => {
+          const newVcData = (await vc.fetch(true)) as VoiceChannel
+
+          // Allows for at least 2 non-bot users in the channel
+          if (newVcData.members.filter((m) => !m.user.bot).size < 2) return
+          for (const [, member] of newVcData.members) {
             usersToAddEXP.add(member)
-          )
-        )
+          }
+        })
+      )
 
       for (const member of usersToAddEXP) {
         const expGained = generateExp()
