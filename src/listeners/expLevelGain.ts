@@ -1,7 +1,6 @@
 import { Point } from '@influxdata/influxdb-client'
 import { Listener } from '@sapphire/framework'
 import { Time } from '@sapphire/time-utilities'
-import assert from 'assert'
 import type { Message, Snowflake, TextChannel } from 'discord.js'
 import { EXP_GAIN_EVENTS, MEASUREMENT_NAMES } from '../constants/analytics'
 import { experienceToLevel, generateExp } from '../constants/expLevel'

@@ -1,5 +1,5 @@
 import { ScheduledTask } from '@sapphire/plugin-scheduled-tasks'
-import { Message, MessageActionRow, MessageEmbed, TextChannel } from 'discord.js'
+import { MessageEmbed, TextChannel } from 'discord.js'
 import { experienceToLevel } from '../constants/expLevel'
 
 export class GiveawayEndTask extends ScheduledTask {

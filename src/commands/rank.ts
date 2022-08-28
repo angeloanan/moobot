@@ -1,6 +1,6 @@
 import { Command, RegisterBehavior } from '@sapphire/framework'
 import { stripIndents } from 'common-tags'
-import { GuildMember, MessageEmbed } from 'discord.js'
+import { MessageEmbed } from 'discord.js'
 import { experienceToLevel, levelExpTotal } from '../constants/expLevel.js'
 import { resolveExpMultiplier } from '../constants/expMultiplier.js'
 
