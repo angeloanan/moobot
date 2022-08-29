@@ -6,7 +6,7 @@ import type { ScheduledTaskRedisStrategyJob } from '@sapphire/plugin-scheduled-t
 import type { Queue } from 'bullmq'
 import { PrismaClient } from '@prisma/client'
 import type { QueryApi, WriteApi } from '@influxdata/influxdb-client'
-import { InfluxQueryAPI, InfluxWriteAPI } from './lib/influx'
+import { InfluxQueryAPI, InfluxMetricsWriteAPI, InfluxWriteAPI } from './lib/influx'
 
 export class BotClient extends SapphireClient {
   public constructor() {
@@ -47,8 +47,10 @@ export class BotClient extends SapphireClient {
 
     container.logger.info('Connecting to analytics service (InfluxDB)...')
     container.analytics = {
+      // TODO: Rewrite handling this. Too tedious. Take care of multiple instances case
       write: InfluxWriteAPI,
-      query: InfluxQueryAPI
+      query: InfluxQueryAPI,
+      metrics: InfluxMetricsWriteAPI
     }
     container.logger.info(`Connected to analytics service.`)
 
@@ -88,6 +90,7 @@ declare module '@sapphire/pieces' {
     analytics: {
       write: WriteApi
       query: QueryApi
+      metrics: WriteApi
     }
   }
 }

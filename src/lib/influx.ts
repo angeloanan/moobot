@@ -11,4 +11,5 @@ const influx = new InfluxDB({
 })
 
 export const InfluxWriteAPI = influx.getWriteApi(influxOrg, influxBucket, 'ms')
+export const InfluxMetricsWriteAPI = influx.getWriteApi(influxOrg, 'metrics')
 export const InfluxQueryAPI = influx.getQueryApi(influxOrg)
