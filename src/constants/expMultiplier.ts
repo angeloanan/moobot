@@ -1,7 +1,10 @@
 import type { GuildMember } from 'discord.js'
 
+// Roles technically only works for English server
 // Map<RoleID, MultiplierToAdd>
+//
 // More info: https://cdn.discordapp.com/attachments/896961989694345247/1012404583873650758/unknown.png
+//
 // TODO: Integrate roles with already existing lookup table in ./roles.ts
 export const ROLE_EXP_FACTOR: [string, number][] = [
   // // Unused - Glaceon

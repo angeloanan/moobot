@@ -6,7 +6,7 @@ import { EXP_GAIN_EVENTS, MEASUREMENT_NAMES } from '../constants/analytics'
 import { experienceToLevel, generateExp } from '../constants/expLevel'
 import { resolveExpMultiplier } from '../constants/expMultiplier'
 
-const TRACKED_SERVER_ID: Snowflake[] = ['998384312065994782']
+const TRACKED_SERVER_ID: Snowflake[] = ['887126730060484648', '998384312065994782']
 
 export class ExpLevelGainListener extends Listener {
   public constructor(context: Listener.Context, options: Listener.Options) {

@@ -1,4 +1,5 @@
 /**
+ * ONLY FOR ENGLISH SERVER - Will need to be updated for other servers
  * Map<TimePassedInMs, RoleId>
  */
 export const TIME_ROLE_PROGRESSION: [number, string][] = [
