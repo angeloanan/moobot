@@ -13,36 +13,31 @@ export class GiveawayIdAutocomplete extends InteractionHandler {
     if (interaction.commandName != 'giveaway') return this.none()
 
     const focusedOption = interaction.options.getFocused(true)
+    const subCommandName = interaction.options.getSubcommand(true)
 
-    switch (focusedOption.name) {
-      case 'id': {
-        const giveaways = await this.container.database.giveaway.findMany({
-          select: {
-            id: true,
-            title: true,
-            createdAt: true
-          },
-          where: {
-            until: {
-              lte: new Date()
-            }
-          },
-          orderBy: {
-            createdAt: 'desc'
-          },
-          take: 5
-        })
+    if (focusedOption.name !== 'id') return this.none()
 
-        return this.some(
-          giveaways.map((g) => ({
-            name: `${g.title} (Started ${g.createdAt.toUTCString()})`,
-            value: g.id
-          }))
-        )
-      }
-      default:
-        return this.none()
-    }
+    const giveaways = await this.container.database.giveaway.findMany({
+      select: {
+        id: true,
+        title: true,
+        createdAt: true
+      },
+      where: {
+        ended: subCommandName != 'end'
+      },
+      orderBy: {
+        createdAt: 'desc'
+      },
+      take: 5
+    })
+
+    return this.some(
+      giveaways.map((g) => ({
+        name: `${g.title} (Started ${g.createdAt.toUTCString()})`,
+        value: g.id
+      }))
+    )
   }
 
   public override async run(
