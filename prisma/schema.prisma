@@ -22,6 +22,7 @@ model Giveaway {
 
   createdAt DateTime @default(now())
   until     DateTime
+  ended     Boolean  @default(false)
 
   // Discord channel where the giveaway is posted
   channelId String

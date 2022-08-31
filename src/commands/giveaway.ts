@@ -23,7 +23,7 @@ export class GiveawayCommand extends Subcommand {
         {
           name: 'end',
           type: 'method',
-          chatInputRun: ''
+          chatInputRun: 'giveawayEnd'
         }
       ]
     })
@@ -79,6 +79,18 @@ export class GiveawayCommand extends Subcommand {
                 input
                   .setName('id')
                   .setDescription('The ID of the giveaway to reroll')
+                  .setAutocomplete(true)
+                  .setRequired(true)
+              )
+          )
+          .addSubcommand((input) =>
+            input
+              .setName('end')
+              .setDescription('[ADMIN] Ends a giveaway')
+              .addIntegerOption((input) =>
+                input
+                  .setName('id')
+                  .setDescription('The ID of the giveaway to end')
                   .setAutocomplete(true)
                   .setRequired(true)
               )
@@ -219,5 +231,25 @@ export class GiveawayCommand extends Subcommand {
     })
 
     await interaction.editReply({ content: 'Giveaway rerolled!' })
+  }
+
+  public async giveawayEnd(interaction: Subcommand.ChatInputInteraction) {
+    await interaction.deferReply({ ephemeral: true })
+
+    const giveawayDbEntry = await this.container.database.giveaway.findUnique({
+      where: { id: interaction.options.getInteger('id', true) },
+      select: {
+        id: true
+      }
+    })
+
+    if (giveawayDbEntry == null) {
+      interaction.editReply({ content: 'Giveaway not found!' })
+      return
+    }
+
+    this.container.tasks.run('giveawayEnd', giveawayDbEntry?.id)
+
+    await interaction.editReply({ content: 'Giveaway ended!' })
   }
 }

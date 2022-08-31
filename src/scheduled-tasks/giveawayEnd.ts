@@ -27,6 +27,14 @@ export class GiveawayEndTask extends ScheduledTask {
         })
       ])
 
+      // TODO: Silent error
+      if (giveawayData.ended) return
+
+      await this.container.database.giveaway.update({
+        where: { id },
+        data: { ended: true }
+      })
+
       /**
        * Array of user ids
        */
