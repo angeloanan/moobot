@@ -4,7 +4,7 @@ import { container, LogLevel, SapphireClient } from '@sapphire/framework'
 import { ScheduledTaskRedisStrategy } from '@sapphire/plugin-scheduled-tasks/register-redis'
 import type { ScheduledTaskRedisStrategyJob } from '@sapphire/plugin-scheduled-tasks/register-redis'
 import type { Queue } from 'bullmq'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, UserExp } from '@prisma/client'
 import type { QueryApi, WriteApi } from '@influxdata/influxdb-client'
 import { InfluxQueryAPI, InfluxMetricsWriteAPI, InfluxWriteAPI } from './lib/influx'
 
@@ -97,10 +97,8 @@ declare module '@sapphire/pieces' {
 
 // Module augmentation for Discord
 declare module 'discord.js' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface ClientEvents {
-    // TODO: Augment custom events here
-    // CustomEvent: {}
+    userLevelUp: [member: GuildMember, data: UserExp]
   }
 }
 

@@ -6,12 +6,14 @@ export class RankUpdateTask extends ScheduledTask {
   public constructor(context: ScheduledTask.Context, options: ScheduledTask.Options) {
     super(context, {
       ...options,
-      name: 'rankUpdate',
+      name: 'loyaltyRankUpdate',
       interval: 60 * 60 * 1000 // Every hour
     })
   }
 
   public async run() {
+    if (process.env.ENGLISH_SERVER !== 'true') return
+
     try {
       this.container.logger.debug('[CRON] Updating ranks...')
 
@@ -76,6 +78,6 @@ export class RankUpdateTask extends ScheduledTask {
 
 declare module '@sapphire/plugin-scheduled-tasks' {
   interface ScheduledTasks {
-    rankUpdate: never
+    loyaltyRankUpdate: never
   }
 }

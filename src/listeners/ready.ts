@@ -30,6 +30,8 @@ export class ReadyListener extends Listener {
       ]
     })
 
-    this.container.tasks.run('rankUpdate', '')
+    if (process.env.ENGLISH_SERVER === 'true') {
+      this.container.tasks.run('loyaltyRankUpdate', '')
+    }
   }
 }

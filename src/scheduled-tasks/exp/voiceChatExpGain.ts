@@ -2,7 +2,7 @@ import { Point } from '@influxdata/influxdb-client'
 import { ScheduledTask } from '@sapphire/plugin-scheduled-tasks'
 import type { GuildMember, VoiceChannel } from 'discord.js'
 import { EXP_GAIN_EVENTS, MEASUREMENT_NAMES } from '../../constants/analytics'
-import { generateExp } from '../../constants/expLevel'
+import { experienceToLevel, generateExp } from '../../constants/expLevel'
 
 const TRACKED_GUILD_ID = '998384312065994782'
 const EXCLUDED_CHANNEL_IDS = ['1012983228354801684']
@@ -48,18 +48,27 @@ export class VoiceChatExpGain extends ScheduledTask {
       for (const member of usersToAddEXP) {
         const expGained = generateExp()
 
-        const userExpData = await this.container.database.userExp.findUnique({
+        let userExpData = await this.container.database.userExp.findUnique({
           where: {
             userId: member.id
           },
           select: {
-            voiceExpLeft: true
+            voiceExpLeft: true,
+            exp: true
           }
         })
 
-        if (userExpData != null && userExpData.voiceExpLeft - expGained > 0) continue
+        if (userExpData == null) {
+          userExpData = await this.container.database.userExp.create({
+            data: {
+              userId: member.id
+            }
+          })
+        }
 
-        await this.container.database.userExp.upsert({
+        if (userExpData.voiceExpLeft - expGained > 0) continue
+
+        const updatedUserExpData = await this.container.database.userExp.upsert({
           where: {
             userId: member.id
           },
@@ -77,8 +86,10 @@ export class VoiceChatExpGain extends ScheduledTask {
             voiceExpLeft: 1000 - expGained
           }
         })
-        // TODO: Cap voice chat exp gains at 1000 exp per day
-        // Need to add more field to userExp table to keep track of exp gained per day
+
+        if (experienceToLevel(userExpData.exp) != experienceToLevel(userExpData.exp + expGained)) {
+          this.container.client.emit('userLevelUp', member, updatedUserExpData)
+        }
 
         this.container.analytics.write.writePoint(
           new Point(MEASUREMENT_NAMES.EXP_GAIN)

@@ -1,5 +1,7 @@
 // https://gamedev.stackexchange.com/questions/20934/how-to-create-adjustable-formula-for-rpg-level-up-requirements
 
+import type { Snowflake } from 'discord.js'
+
 // Intended total level
 const TOTAL_LEVEL = 100
 const FIRST_LEVEL_EXP = 1_000
@@ -49,4 +51,17 @@ export const experienceNeededToLevelUp = (
   currentLevel: number = level - 1
 ): number => {
   return levelExpTotal(level) - levelExpTotal(currentLevel)
+}
+
+export const LEVEL_ROLES_MAP: Record<number, Snowflake> = {
+  100: '1014585354117984318',
+  90: '1014585360380067951',
+  80: '1014585364213674086',
+  70: '1014585367883689988',
+  60: '1014585371373355058',
+  50: '1014585371373355063',
+  40: '1014585374825250846',
+  30: '1014585378939875328',
+  20: '1014585382291116102',
+  10: '1014585385013235865'
 }
