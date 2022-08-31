@@ -22,9 +22,14 @@ export class ClearNickCommand extends Command {
     const allMembers = await guild.members.fetch()
 
     for await (const [_, m] of allMembers) {
+      if (m.user.bot) continue
       if (m.nickname != null) {
-        await m.setNickname(null, 'Clearing nick')
+        await m.setNickname(null, 'Clearing nick').catch((e) => {
+          this.container.logger.error('[NICKCLEAR] ', e)
+        })
       }
     }
+
+    this.container.logger.info('[NICKCLEAR] Cleared nick for all users. We gucci fam')
   }
 }
