@@ -4,8 +4,9 @@ import type { GuildMember, VoiceChannel } from 'discord.js'
 import { EXP_GAIN_EVENTS, MEASUREMENT_NAMES } from '../../constants/analytics'
 import { experienceToLevel, generateExp } from '../../constants/expLevel'
 
-const TRACKED_GUILD_ID = '998384312065994782'
-const EXCLUDED_CHANNEL_IDS = ['1012983228354801684']
+const TRACKED_GUILD_ID =
+  process.env.ENGLISH_SERVER === 'true' ? '887126730060484648' : '998384312065994782'
+const EXCLUDED_CHANNEL_IDS = ['1012983228354801684', '1014610268380205057']
 
 export class VoiceChatExpGain extends ScheduledTask {
   public constructor(context: ScheduledTask.Context, options: ScheduledTask.Options) {
