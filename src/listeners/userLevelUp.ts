@@ -3,7 +3,8 @@ import { Listener } from '@sapphire/framework'
 import type { GuildMember, Snowflake, TextChannel } from 'discord.js'
 import { experienceToLevel, LEVEL_ROLES_MAP } from '../constants/expLevel'
 
-const LEVEL_LOG_CHANNEL: Snowflake = '1007273746903617706'
+const LEVEL_LOG_CHANNEL: Snowflake =
+  process.env.ENGLISH_SERVER === 'true' ? '1014229599737094244' : '1007273746903617706'
 
 export class UserLevelUpListener extends Listener {
   public constructor(context: Listener.Context, options: Listener.Options) {
