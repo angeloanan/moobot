@@ -22,7 +22,7 @@ export class VoiceChatExpGain extends ScheduledTask {
       this.container.logger.debug('[CRON] Giving EXP to Voice Chat users')
 
       const currentTime = new Date()
-      const guild = await this.container.client.guilds.cache.get(TRACKED_GUILD_ID)
+      const guild = await this.container.client.guilds.fetch(TRACKED_GUILD_ID)
 
       if (!guild) {
         this.container.logger.fatal(`Could not find guild with ID ${TRACKED_GUILD_ID}`)
