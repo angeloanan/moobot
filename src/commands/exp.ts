@@ -33,21 +33,23 @@ export class ExpCommand extends Subcommand {
           .addSubcommand((command) =>
             command
               .setName('increment')
-              .addUserOption((opt) =>
-                opt.setName('user').setDescription('Target user to modify').setRequired(true)
+              .setDescription("Increment an user's EXP")
+              .addUserOption((input) =>
+                input.setName('user').setDescription('Target user to modify').setRequired(true)
               )
-              .addIntegerOption((opt) =>
-                opt.setName('amount').setDescription('Amount to increment by').setRequired(true)
+              .addIntegerOption((input) =>
+                input.setName('amount').setDescription('Amount to increment by').setRequired(true)
               )
           )
           .addSubcommand((command) =>
             command
               .setName('decrement')
-              .addUserOption((opt) =>
-                opt.setName('user').setDescription('Target user to modify').setRequired(true)
+              .setDescription("Decrement an user's EXP")
+              .addUserOption((input) =>
+                input.setName('user').setDescription('Target user to modify').setRequired(true)
               )
-              .addIntegerOption((opt) =>
-                opt.setName('amount').setDescription('Amount to decrement by').setRequired(true)
+              .addIntegerOption((input) =>
+                input.setName('amount').setDescription('Amount to decrement by').setRequired(true)
               )
           ),
       {
