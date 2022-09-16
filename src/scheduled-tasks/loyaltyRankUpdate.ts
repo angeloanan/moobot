@@ -1,6 +1,6 @@
 import { ScheduledTask } from '@sapphire/plugin-scheduled-tasks'
 import { GUILD_ID } from '../constants/guild'
-import { TIME_ROLE_PROGRESSION } from '../constants/roles'
+import { TIME_ROLE_PROGRESSION } from '../constants/loyaltyRoles'
 
 export class RankUpdateTask extends ScheduledTask {
   public constructor(context: ScheduledTask.Context, options: ScheduledTask.Options) {

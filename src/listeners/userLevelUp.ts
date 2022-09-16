@@ -1,10 +1,8 @@
 import type { UserExp } from '@prisma/client'
 import { Listener } from '@sapphire/framework'
-import type { GuildMember, Snowflake, TextChannel } from 'discord.js'
+import type { GuildMember, TextChannel } from 'discord.js'
+import { LEVELUP_LOG_CHANNEL_ID } from '../constants/channels'
 import { experienceToLevel, LEVEL_ROLES_MAP } from '../constants/expLevel'
-
-const LEVEL_LOG_CHANNEL: Snowflake =
-  process.env.ENGLISH_SERVER === 'true' ? '1014229599737094244' : '1007273746903617706'
 
 export class UserLevelUpListener extends Listener {
   public constructor(context: Listener.Context, options: Listener.Options) {
@@ -16,7 +14,7 @@ export class UserLevelUpListener extends Listener {
 
   async run(_oldMember: GuildMember, data: UserExp): Promise<void> {
     const logChannel = (await this.container.client.channels.fetch(
-      LEVEL_LOG_CHANNEL
+      LEVELUP_LOG_CHANNEL_ID
     )) as TextChannel
     const currentLevel = experienceToLevel(data.exp)
     const member = await _oldMember.fetch()

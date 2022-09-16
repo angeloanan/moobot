@@ -1,9 +1,7 @@
 import { RegisterBehavior } from '@sapphire/framework'
 import { Subcommand } from '@sapphire/plugin-subcommands'
 import type { TextChannel } from 'discord.js'
-
-const logChannelId =
-  process.env.ENGLISH_SERVER == 'true' ? '893136213765144627' : '998384313584336999'
+import { LEVELUP_LOG_CHANNEL_ID } from '../constants/channels'
 
 export class ExpCommand extends Subcommand {
   public constructor(context: Subcommand.Context, options: Subcommand.Options) {
@@ -84,7 +82,9 @@ export class ExpCommand extends Subcommand {
       content: replyMessage
     })
 
-    const logChannel = (await this.container.client.channels.fetch(logChannelId)) as TextChannel
+    const logChannel = (await this.container.client.channels.fetch(
+      LEVELUP_LOG_CHANNEL_ID
+    )) as TextChannel
     logChannel.send({ content: `<@${interaction.user.id}> ` + replyMessage })
   }
 
@@ -113,7 +113,9 @@ export class ExpCommand extends Subcommand {
       content: replyMessage
     })
 
-    const logChannel = (await this.container.client.channels.fetch(logChannelId)) as TextChannel
+    const logChannel = (await this.container.client.channels.fetch(
+      LEVELUP_LOG_CHANNEL_ID
+    )) as TextChannel
     logChannel.send({ content: `<@${interaction.user.id}> ` + replyMessage })
   }
 }

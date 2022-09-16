@@ -2,9 +2,9 @@ import { Point } from '@influxdata/influxdb-client'
 import { Listener } from '@sapphire/framework'
 import type { Collection, GuildMember, Invite } from 'discord.js'
 import { MEASUREMENT_NAMES } from '../constants/analytics'
+import { GUILD_ID } from '../constants/guild.js'
 
-const trackedGuild =
-  process.env.ENGLISH_SERVER === 'true' ? '887126730060484648' : '998384312065994782'
+const trackedGuild = GUILD_ID
 
 let oldInvitesCollection: Collection<string, Invite>
 
